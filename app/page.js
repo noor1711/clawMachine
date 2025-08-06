@@ -16,7 +16,7 @@ const GamePage = () => {
   const [clawPosition, setClawPosition] = useState(10); // 0 to 100 representing percentage across the x-axis
   const [verticalClawPositon, setVerticalClawPosition] = useState(0);
   const [prizes, setPrizes] = useState([]);
-  const [gameState, setGameState] = useState("idle"); // 'idle', 'moving', 'dropping'
+  const [gameState, setGameState] = useState(GAME_STATES.IDLE); // 'idle', 'moving', 'dropping'
   const prizeImages = ["/prize1.png", "/prize2.png", "/prize3.png"];
   const [interval, setCurrInterval] = useState();
   const [prizeWon, setPrizeWon] = useState(undefined);
@@ -68,8 +68,10 @@ const GamePage = () => {
 
   const resetGame = useCallback(() => {
     initialisePrizes();
+    setShowPrize(false);
     setPrizeWon();
     setGameState(GAME_STATES.IDLE);
+    setClawPosition(10);
   }, []);
 
   const findDistance = (x1, x2) => {
@@ -144,7 +146,14 @@ const GamePage = () => {
 
   return (
     <div className="game-container">
-      <div>
+      <div className="flex flex-col">
+        <div onClick={resetGame}>
+          <Animator
+            spriteSheetPath="/newGameSprite.png"
+            dimensions={{ height: 200, width: 200 }}
+            isActive={gameState === GAME_STATES.DONE}
+          />
+        </div>
         {showPrize ? (
           <Animator
             spriteSheetPath="/prizeSprite.png"
