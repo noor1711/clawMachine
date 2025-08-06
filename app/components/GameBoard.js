@@ -32,8 +32,6 @@ const GameBoard = ({ clawPosition, verticalClawPosition, prizes }) => {
           position: relative;
           width: 275px;
           height: 300px;
-          border: 5px solid #333;
-          border-radius: 5px;
           margin: 20px auto;
           overflow: hidden;
         }
