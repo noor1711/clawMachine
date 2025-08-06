@@ -1,7 +1,8 @@
 import Image from "next/image";
+import { GAME_STATES } from "../page";
 
 const ControlPanel = ({ onMoveLeft, onMoveRight, onDropClaw, gameState }) => {
-  const isMoving = gameState === "moving" || gameState === "dropping";
+  const isMoving = gameState != GAME_STATES.IDLE;
 
   return (
     <div className="control-panel">

@@ -4,6 +4,14 @@ import GameBoard from "./components/GameBoard";
 import ControlPanel from "./components/ControlPanel";
 import Animator from "./components/Animator";
 
+export const GAME_STATES = {
+  IDLE: "idle",
+  DONE: "done",
+  DROPPING: "dropping",
+  RAISING: "raising",
+  MOVING: "moving",
+};
+
 const GamePage = () => {
   const [clawPosition, setClawPosition] = useState(10); // 0 to 100 representing percentage across the x-axis
   const [verticalClawPositon, setVerticalClawPosition] = useState(0);
@@ -34,23 +42,22 @@ const GamePage = () => {
   }, []);
 
   useEffect(() => {
-    if (gameState == "dropping" && verticalClawPositon >= 80) {
+    if (gameState == GAME_STATES.DROPPING && verticalClawPositon >= 80) {
       const prizeId = findClosest();
       setPrizeWon(prizeId);
       clearInterval(interval);
       setCurrInterval(null);
       handleClawRaise();
-    } else if (gameState == "raising" && verticalClawPositon <= 10) {
+    } else if (gameState == GAME_STATES.RAISING && verticalClawPositon <= 10) {
       clearInterval(interval);
       setCurrInterval(null);
       if (!(typeof prizeWon === "undefined" || prizeWon === null)) {
         setShowPrize(true);
       }
-      setTimeout(() => {}, 3000);
+      setGameState(GAME_STATES.DONE);
     }
   }, [gameState, verticalClawPositon]);
 
-  console.log("here", typeof prizeWon === "undefined" || prizeWon === null);
   useEffect(() => {
     if (!(typeof prizeWon === "undefined" || prizeWon === null)) {
       const newPrizeObject = [...prizes];
@@ -62,7 +69,7 @@ const GamePage = () => {
   const resetGame = useCallback(() => {
     initialisePrizes();
     setPrizeWon();
-    setGameState("idle");
+    setGameState(GAME_STATES.IDLE);
   }, []);
 
   const findDistance = (x1, x2) => {
@@ -87,9 +94,9 @@ const GamePage = () => {
   };
 
   const handleMoveClaw = (direction) => {
-    if (gameState !== "idle") return;
+    if (gameState !== GAME_STATES.IDLE) return;
 
-    setGameState("moving");
+    setGameState(GAME_STATES.MOVING);
     const step = 3;
     let newPosition = clawPosition;
 
@@ -100,13 +107,13 @@ const GamePage = () => {
     }
 
     setClawPosition(newPosition);
-    setGameState("idle");
+    setGameState(GAME_STATES.IDLE);
   };
 
   const handleClawRaise = useCallback(() => {
-    if (gameState !== "idle") return;
+    if (gameState !== GAME_STATES.IDLE) return;
 
-    setGameState("raising");
+    setGameState(GAME_STATES.RAISING);
     let counter = 80;
 
     function decrementCounter() {
@@ -120,9 +127,9 @@ const GamePage = () => {
   }, []);
 
   const handleDropClaw = useCallback(() => {
-    if (gameState !== "idle") return;
+    if (gameState !== GAME_STATES.IDLE) return;
 
-    setGameState("dropping");
+    setGameState(GAME_STATES.DROPPING);
     let counter = 0;
 
     function incrementCounter() {
