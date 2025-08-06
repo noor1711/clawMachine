@@ -20,8 +20,8 @@ const GamePage = () => {
       newPrizes.push({
         id: i,
         image: prizeImages[Math.floor(Math.random() * prizeImages.length)],
-        x: Math.random() * 80 + 10, // Random x position (10% to 90%)
-        y: Math.random() * 20 + 60, // Random y position (20% to 80%)
+        x: Math.random() * 85 + 5, // Random x position (10% to 90%)
+        y: Math.random() * 5 + 85, // Random y position (20% to 80%)
       });
     }
     setPrizes(newPrizes);
@@ -41,17 +41,23 @@ const GamePage = () => {
     } else if (gameState == "raising" && verticalClawPositon <= 10) {
       clearInterval(interval);
       setCurrInterval(null);
-      setGameState("idle");
+      setTimeout(() => {}, 3000);
     }
   }, [gameState, verticalClawPositon]);
 
   useEffect(() => {
     if (!!prizeWon) {
       const newPrizeObject = [...prizes];
-      newPrizeObject[prizeWon].y = verticalClawPositon;
+      newPrizeObject[prizeWon].y = verticalClawPositon + 10;
       setPrizes(newPrizeObject);
     }
   }, [prizeWon, verticalClawPositon]);
+
+  const resetGame = useCallback(() => {
+    initialisePrizes();
+    setPrizeWon();
+    setGameState("idle");
+  }, []);
 
   const findDistance = (x1, x2) => {
     return Math.abs(x1 - x2);
@@ -62,7 +68,7 @@ const GamePage = () => {
     let prizeId = 0;
 
     prizes.forEach((prize, index) => {
-      const dis = findDistance(clawPosition, prize.x);
+      const dis = findDistance(clawPosition - 15, prize.x);
       if (dis < minDis) {
         prizeId = index;
         minDis = dis;
@@ -124,30 +130,42 @@ const GamePage = () => {
   }, []);
 
   return (
-    <div className="game-container border-4 mx-auto">
-      <h1 className="">Claw Machine Game</h1>
-      <GameBoard
-        clawPosition={clawPosition}
-        verticalClawPosition={verticalClawPositon}
-        prizes={prizes}
-      />
-      <ControlPanel
-        onMoveLeft={() => handleMoveClaw("left")}
-        onMoveRight={() => handleMoveClaw("right")}
-        onDropClaw={handleDropClaw}
-        gameState={gameState}
-      />
+    <div className="game-container">
+      <h1 className="font-pixel text-5xl">Claw Machine Game</h1>
+      <div className="vending-machine">
+        <GameBoard
+          clawPosition={clawPosition}
+          verticalClawPosition={verticalClawPositon}
+          prizes={prizes}
+        />
+        <ControlPanel
+          onMoveLeft={() => handleMoveClaw("left")}
+          onMoveRight={() => handleMoveClaw("right")}
+          onDropClaw={handleDropClaw}
+          gameState={gameState}
+        />
+      </div>
       <style jsx>{`
         .game-container {
           text-align: center;
           font-family: Arial, sans-serif;
-          width: min-width;
-          background-color: white;
-          // height: 1000px;
-          // background-image: url("/background.png");
-          // background-size: cover; /* This makes sure the image covers the entire container */
-          background-position: center;
-          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          margin: auto 0;
+          background-image: url("/cloudy-background.jpg");
+          height: 820px;
+        }
+        .vending-machine {
+          height: 700px;
+          width: 700px;
+          background-size: cover;
+          background-image: url("/background.png");
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: 80px 50px 0px 0px;
         }
       `}</style>
     </div>

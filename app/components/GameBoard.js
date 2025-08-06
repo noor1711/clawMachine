@@ -30,8 +30,8 @@ const GameBoard = ({ clawPosition, verticalClawPosition, prizes }) => {
       <style jsx>{`
         .game-board {
           position: relative;
-          width: 400px;
-          height: 400px;
+          width: 275px;
+          height: 300px;
           border: 5px solid #333;
           border-radius: 5px;
           margin: 20px auto;
