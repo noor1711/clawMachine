@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import GameBoard from "./components/GameBoard";
 import ControlPanel from "./components/ControlPanel";
+import Animator from "./components/Animator";
 
 const GamePage = () => {
   const [clawPosition, setClawPosition] = useState(10); // 0 to 100 representing percentage across the x-axis
@@ -10,7 +11,8 @@ const GamePage = () => {
   const [gameState, setGameState] = useState("idle"); // 'idle', 'moving', 'dropping'
   const prizeImages = ["/prize1.png", "/prize2.png", "/prize3.png"];
   const [interval, setCurrInterval] = useState();
-  const [prizeWon, setPrizeWon] = useState();
+  const [prizeWon, setPrizeWon] = useState(undefined);
+  const [showPrize, setShowPrize] = useState();
 
   const initialisePrizes = () => {
     const newPrizes = [];
@@ -41,12 +43,16 @@ const GamePage = () => {
     } else if (gameState == "raising" && verticalClawPositon <= 10) {
       clearInterval(interval);
       setCurrInterval(null);
+      if (!(typeof prizeWon === "undefined" || prizeWon === null)) {
+        setShowPrize(true);
+      }
       setTimeout(() => {}, 3000);
     }
   }, [gameState, verticalClawPositon]);
 
+  console.log("here", typeof prizeWon === "undefined" || prizeWon === null);
   useEffect(() => {
-    if (!!prizeWon) {
+    if (!(typeof prizeWon === "undefined" || prizeWon === null)) {
       const newPrizeObject = [...prizes];
       newPrizeObject[prizeWon].y = verticalClawPositon + 10;
       setPrizes(newPrizeObject);
@@ -131,26 +137,38 @@ const GamePage = () => {
 
   return (
     <div className="game-container">
-      <h1 className="font-pixel text-5xl">Claw Machine Game</h1>
-      <div className="vending-machine">
-        <GameBoard
-          clawPosition={clawPosition}
-          verticalClawPosition={verticalClawPositon}
-          prizes={prizes}
-        />
-        <ControlPanel
-          onMoveLeft={() => handleMoveClaw("left")}
-          onMoveRight={() => handleMoveClaw("right")}
-          onDropClaw={handleDropClaw}
-          gameState={gameState}
-        />
+      <div>
+        {showPrize ? (
+          <Animator
+            spriteSheetPath="/prizeSprite.png"
+            dimensions={{ height: 300, width: 300 }}
+          />
+        ) : (
+          <div className="h-[300px] w-[300px]"></div>
+        )}
+      </div>
+      <div>
+        <h1 className="font-pixel text-5xl">Claw Machine Game</h1>
+        <div className="vending-machine">
+          <GameBoard
+            clawPosition={clawPosition}
+            verticalClawPosition={verticalClawPositon}
+            prizes={prizes}
+          />
+          <ControlPanel
+            onMoveLeft={() => handleMoveClaw("left")}
+            onMoveRight={() => handleMoveClaw("right")}
+            onDropClaw={handleDropClaw}
+            gameState={gameState}
+          />
+        </div>
       </div>
       <style jsx>{`
         .game-container {
           text-align: center;
           font-family: Arial, sans-serif;
           display: flex;
-          flex-direction: column;
+          flex-direction: row;
           justify-content: center;
           align-items: center;
           margin: auto 0;
