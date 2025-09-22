@@ -20,6 +20,57 @@
   }
 }
 
+/* Layered Button Effect */
+.layered-button-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.layered-button-container::before,
+.layered-button-container::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 1.5rem;
+  border: 4px solid #f472b6;
+  background: linear-gradient(to right, #f472b6, #c084fc, #f472b6);
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.layered-button-container::before {
+  transform: translate(6px, 6px);
+}
+
+.layered-button-container::after {
+  transform: translate(12px, 12px);
+}
+
+.layered-button-container:hover::before {
+  opacity: 0.7;
+  transform: translate(4px, 4px);
+}
+
+.layered-button-container:hover::after {
+  opacity: 0.4;
+  transform: translate(8px, 8px);
+}
+
+.layered-button-container:hover .layered-button {
+  transform: translate(-2px, -2px);
+  box-shadow: 0 25px 50px -12px rgba(244, 114, 182, 0.5);
+}
+
+.layered-button {
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

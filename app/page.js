@@ -189,7 +189,10 @@ const GamePage = () => {
           align-items: center;
           margin: auto 0;
           background-image: url("/cloudy-background.jpg");
-          height: 820px;
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: center center;
+          height: 100vh; /* Ensures the body takes up the full viewport height */
         }
         .vending-machine {
           height: 700px;
