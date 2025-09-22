@@ -56,7 +56,7 @@
 }
 
 .layered-button-container:hover::after {
-  opacity: 0.4;
+  opacity: 0.3;
   transform: translate(8px, 8px);
 }
 
